@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: soar_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: soar_dev_123
+      POSTGRES_DB: soar_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - soar_pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  soar_pgdata:
