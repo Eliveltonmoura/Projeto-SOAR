@@ -68,10 +68,10 @@ Ciclo de desenvolvimento fixado entre **18/05/2026 e 28/06/2026**:
 
 ## 🔗 Links e Artefatos
 
-- 📐 **Figma (Protótipos):** [Acesse o Projeto de Interface](https://figma.com/seu-link-aqui)
-- 📊 **Trello / Jira (Board):** [Acesse o Quadro de Sprints](https://trello.com/seu-link-aqui)
-- 📑 **Documento 1 (Requisitos SRS):** [Download do PDF Técnico](https://github.com/Eliveltonmoura/Projeto-SOAR/blob/main/Documento_1_Especificacao_Requisitos_SRS.pdf)
-- 🏗️ **Documento 2 (Arquitetura):** [Download do PDF de Engenharia](https://github.com/Eliveltonmoura/Projeto-SOAR/blob/main/Documento_2_Arquitetura_e_Planejamento_Sprints.pdf)
+- 📐 **Figma (Protótipos):** [Acesse o Projeto de Interface](https://www.figma.com/design/A4lwRlMKkauaInJb1nYzm0/Sistema-SOAR?node-id=0-1&t=NaZwsV39OrZZs60A-1)
+- 📊 **Trello / Jira (Board):** [Acesse o Quadro de Sprints](https://trello.com/b/EZvS9GiB/projeto-do-soar)
+- 📑 **Documento 1 (Requisitos SRS):** [Download do PDF Técnico](https://docs.google.com/document/d/1F7cVL5bvnvLtRE6WHnex3Q87s-SxPla6edRK9vS85YE/edit?usp=drive_link)
+- 🏗️ **Documento 2 (Arquitetura):** [Download do PDF de Engenharia](https://docs.google.com/document/d/1gXg4DbZqmC58q4UCmk_YPuqZxu_YaRgzCd0a1ZPD5LA/edit?usp=drive_link)
 
 ---
 
