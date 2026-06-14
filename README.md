@@ -60,9 +60,9 @@ Ciclo de desenvolvimento fixado entre **18/05/2026 e 28/06/2026**:
 
 | Sprint | Período | Entregas |
 |---|---|---|
-| Sprint 1 | 18/05 – 31/05 | Infraestrutura base, banco relacional, Bcrypt e `[HU-01]` Matrícula Online |
-| Sprint 2 | 01/06 – 14/06 | `[HU-02]` Fila de Espera e `[HU-03]` Diário de Presença Mobile |
-| Sprint 3 | 15/06 – 28/06 | `[HU-04]` Upload PIX, `[HU-05]` Relatórios PDF e homologação com Flávio França |
+| Sprint 1 | 18/05 – 31/05 | Infraestrutura base, banco relacional,  e  Matrícula Online |
+| Sprint 2 | 01/06 – 14/06 |  Fila de Espera e Inplemetação do login, lista de presença e atualização do layout.|
+| Sprint 3 | 15/06 – 28/06 |  Relatórios PDF e homologação com Flávio França |
 
 ---
 
