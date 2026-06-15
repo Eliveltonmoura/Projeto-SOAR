@@ -19,4 +19,9 @@ export const presencaService = {
 
   porData: (data: string) =>
     api.get<RegistroPresenca[]>(`/presenca/data?data=${data}`).then((r) => r.data),
+
+  porTurma: (instrumento: string, horario: string, data: string) =>
+    api
+      .get<RegistroPresenca[]>('/presenca/turma', { params: { instrumento, horario, data } })
+      .then((r) => r.data),
 };

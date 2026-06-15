@@ -6,6 +6,8 @@ import { MatriculasModule } from './modules/matriculas/matriculas.module';
 import { PresencaModule } from './modules/presenca/presenca.module';
 import { DoacoesModule } from './modules/doacoes/doacoes.module';
 import { RelatoriosModule } from './modules/relatorios/relatorios.module';
+import { TurmasModule } from './modules/turmas/turmas.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -30,11 +32,13 @@ import { RelatoriosModule } from './modules/relatorios/relatorios.module';
     }),
 
     // Módulos de negócio
+    AuthModule,
     AlunosModule,
     MatriculasModule,
     PresencaModule,
     DoacoesModule,
     RelatoriosModule,
+    TurmasModule,
   ],
 })
 export class AppModule {}

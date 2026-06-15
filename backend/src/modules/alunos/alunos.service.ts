@@ -7,16 +7,22 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Aluno, StatusAluno } from './aluno.entity';
+import { RegistroPresenca } from '../presenca/presenca.entity';
 import { CreateAlunoDto, AlunoResponseDto } from './dto/aluno.dto';
+import { VAGAS_POR_HORARIO } from './constants';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class AlunosService {
   // Vagas por turma/horário — pode virar configuração no banco futuramente
-  private readonly VAGAS_POR_HORARIO = 10;
+  private readonly VAGAS_POR_HORARIO = VAGAS_POR_HORARIO;
 
   constructor(
     @InjectRepository(Aluno)
     private readonly alunoRepo: Repository<Aluno>,
+    @InjectRepository(RegistroPresenca)
+    private readonly presencaRepo: Repository<RegistroPresenca>,
+    private readonly authService: AuthService,
   ) {}
 
   // HU-01: Matrícula com validação LGPD
@@ -38,20 +44,57 @@ export class AlunosService {
       );
     }
 
-    const vagas = await this.contarVagasDisponiveis(dto.horarioPreferencial);
-    const status = vagas > 0 ? StatusAluno.ATIVO : StatusAluno.AGUARDANDO;
-    const posicaoFila = status === StatusAluno.AGUARDANDO
-      ? await this.proximaPosicaoFila(dto.horarioPreferencial)
-      : null;
-
     const aluno = this.alunoRepo.create({
       ...dto,
+      // Alunos maiores de idade são seu próprio responsável
+      nomeResponsavel: dto.nomeResponsavel || dto.nomeCompleto,
       dataNascimento: new Date(dto.dataNascimento),
-      status,
-      posicaoFila,
+      status: StatusAluno.PENDENTE,
+      posicaoFila: null,
       termoLgpdAssinadoEm: new Date(),
     });
 
+    const salvo = await this.alunoRepo.save(aluno);
+    return this.toResponseDto(salvo);
+  }
+
+  // Matrículas aguardando aprovação do administrador
+  async findPendentes(): Promise<AlunoResponseDto[]> {
+    const alunos = await this.alunoRepo.find({
+      where: { status: StatusAluno.PENDENTE },
+      order: { criadoEm: 'ASC' },
+    });
+    return alunos.map((aluno) => this.toResponseDto(aluno));
+  }
+
+  // Admin aceita a matrícula: vira aluno ativo ou entra na fila de espera, conforme vagas
+  async aprovar(id: string): Promise<AlunoResponseDto> {
+    const aluno = await this.alunoRepo.findOne({ where: { id } });
+    if (!aluno) throw new NotFoundException('Aluno não encontrado.');
+    if (aluno.status !== StatusAluno.PENDENTE) {
+      throw new BadRequestException('Esta matrícula já foi avaliada.');
+    }
+
+    const vagas = await this.contarVagasDisponiveis(aluno.horarioPreferencial);
+    aluno.status = vagas > 0 ? StatusAluno.ATIVO : StatusAluno.AGUARDANDO;
+    aluno.posicaoFila = aluno.status === StatusAluno.AGUARDANDO
+      ? await this.proximaPosicaoFila(aluno.horarioPreferencial)
+      : null;
+
+    const salvo = await this.alunoRepo.save(aluno);
+    await this.authService.criarContaParaAluno(salvo);
+    return this.toResponseDto(salvo);
+  }
+
+  // Admin rejeita a matrícula
+  async rejeitar(id: string): Promise<AlunoResponseDto> {
+    const aluno = await this.alunoRepo.findOne({ where: { id } });
+    if (!aluno) throw new NotFoundException('Aluno não encontrado.');
+    if (aluno.status !== StatusAluno.PENDENTE) {
+      throw new BadRequestException('Esta matrícula já foi avaliada.');
+    }
+
+    aluno.status = StatusAluno.REJEITADO;
     const salvo = await this.alunoRepo.save(aluno);
     return this.toResponseDto(salvo);
   }
@@ -60,7 +103,20 @@ export class AlunosService {
     const alunos = await this.alunoRepo.find({
       order: { criadoEm: 'DESC' },
     });
-    return alunos.map(this.toResponseDto);
+
+    const faltas = await this.presencaRepo
+      .createQueryBuilder('p')
+      .select('p.aluno_id', 'alunoId')
+      .addSelect('COUNT(*)', 'total')
+      .where('p.presente = false')
+      .groupBy('p.aluno_id')
+      .getRawMany();
+    const faltasMap = new Map(faltas.map((f) => [f.alunoId, Number(f.total)]));
+
+    return alunos.map((aluno) => ({
+      ...this.toResponseDto(aluno),
+      faltas: faltasMap.get(aluno.id) ?? 0,
+    }));
   }
 
   async findById(id: string): Promise<AlunoResponseDto> {

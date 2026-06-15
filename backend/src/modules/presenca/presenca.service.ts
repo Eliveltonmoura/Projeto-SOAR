@@ -5,15 +5,30 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { IsBoolean, IsDateString, IsOptional, IsString, IsUUID } from 'class-validator';
 import { RegistroPresenca } from './presenca.entity';
 import { Aluno } from '../alunos/aluno.entity';
 
 export class LancarPresencaDto {
+  @IsUUID()
   alunoId: string;
+
+  @IsDateString()
   data: string; // 'YYYY-MM-DD'
+
+  @IsBoolean()
   presente: boolean;
+
+  @IsOptional()
+  @IsString()
   conteudoAula?: string;
+
+  @IsOptional()
+  @IsString()
   professor?: string;
+
+  @IsOptional()
+  @IsString()
   observacoes?: string;
 }
 
@@ -78,6 +93,17 @@ export class PresencaService {
   async findByData(data: string): Promise<RegistroPresenca[]> {
     return this.presencaRepo.find({
       where: { data: new Date(data) },
+      order: { lancadoEm: 'ASC' },
+    });
+  }
+
+  // HU-03: presenças já lançadas para uma turma (instrumento + horário) em uma data
+  async findByTurmaEData(instrumento: string, horario: string, data: string): Promise<RegistroPresenca[]> {
+    return this.presencaRepo.find({
+      where: {
+        data: new Date(data),
+        aluno: { instrumentoDesejado: instrumento, horarioPreferencial: horario },
+      },
       order: { lancadoEm: 'ASC' },
     });
   }
