@@ -2,15 +2,24 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   Body,
   Param,
   ParseUUIDPipe,
   HttpCode,
   HttpStatus,
+  UseGuards,
+  NotFoundException,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AlunosService } from './alunos.service';
 import { CreateAlunoDto } from './dto/aluno.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
+import { PapelUsuario } from '../auth/usuario.entity';
+import { CurrentUsuario } from '../auth/current-usuario.decorator';
+import { UsuarioAutenticado } from '../auth/jwt.strategy';
 
 @ApiTags('Alunos')
 @Controller('alunos')
@@ -27,13 +36,57 @@ export class AlunosController {
     return this.alunosService.matricular(dto);
   }
 
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Dados do aluno autenticado (portal do aluno)' })
+  meuPerfil(@CurrentUsuario() usuario: UsuarioAutenticado) {
+    if (!usuario.alunoId) {
+      throw new NotFoundException('Esta conta não está vinculada a um aluno.');
+    }
+    return this.alunosService.findById(usuario.alunoId);
+  }
+
   @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(PapelUsuario.ADMIN, PapelUsuario.PROFESSOR)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Lista todos os alunos' })
   findAll() {
     return this.alunosService.findAll();
   }
 
+  @Get('pendentes')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(PapelUsuario.ADMIN, PapelUsuario.PROFESSOR)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Lista matrículas pendentes de aprovação' })
+  findPendentes() {
+    return this.alunosService.findPendentes();
+  }
+
+  @Patch(':id/aprovar')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(PapelUsuario.ADMIN, PapelUsuario.PROFESSOR)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Aprova uma matrícula pendente' })
+  aprovar(@Param('id', ParseUUIDPipe) id: string) {
+    return this.alunosService.aprovar(id);
+  }
+
+  @Patch(':id/rejeitar')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(PapelUsuario.ADMIN, PapelUsuario.PROFESSOR)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Rejeita uma matrícula pendente' })
+  rejeitar(@Param('id', ParseUUIDPipe) id: string) {
+    return this.alunosService.rejeitar(id);
+  }
+
   @Get(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(PapelUsuario.ADMIN, PapelUsuario.PROFESSOR)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Busca aluno por ID' })
   findById(@Param('id', ParseUUIDPipe) id: string) {
     return this.alunosService.findById(id);

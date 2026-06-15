@@ -8,7 +8,9 @@ import {
   IsNotEmpty,
   Length,
   Matches,
+  ValidateIf,
 } from 'class-validator';
+import { isMenorDeIdade } from '../idade.util';
 
 // DTO de criação — valida os dados que chegam da requisição
 export class CreateAlunoDto {
@@ -22,10 +24,13 @@ export class CreateAlunoDto {
   @Matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, { message: 'CPF inválido' })
   cpfResponsavel: string;
 
-  @ApiProperty({ example: 'Maria da Silva' })
-  @IsString()
-  @IsNotEmpty()
-  nomeResponsavel: string;
+  @ApiPropertyOptional({
+    example: 'Maria da Silva',
+    description: 'Obrigatório apenas se o aluno for menor de 18 anos. Para alunos maiores, o próprio aluno é o responsável.',
+  })
+  @ValidateIf((o: CreateAlunoDto) => isMenorDeIdade(o.dataNascimento))
+  @IsNotEmpty({ message: 'Nome do responsável é obrigatório para alunos menores de 18 anos.' })
+  nomeResponsavel?: string;
 
   @ApiProperty({ example: '(88) 99999-9999' })
   @IsString()
@@ -69,5 +74,6 @@ export class AlunoResponseDto {
   instrumentoDesejado: string;
   horarioPreferencial: string;
   criadoEm: Date;
+  faltas?: number; // total de presenças lançadas como ausente
   // cpfResponsavel NÃO é exposto aqui — proteção LGPD
 }

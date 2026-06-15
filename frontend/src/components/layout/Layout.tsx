@@ -1,17 +1,13 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import {
   Users,
-  ClipboardList,
   Heart,
-  BarChart3,
   Music,
 } from 'lucide-react';
 
 const navItems = [
   { to: '/matricula', icon: Users, label: 'Matrícula' },
-  { to: '/presenca', icon: ClipboardList, label: 'Presença' },
   { to: '/doacoes', icon: Heart, label: 'Doações' },
-  { to: '/relatorios', icon: BarChart3, label: 'Relatórios' },
 ];
 
 export function Layout() {
