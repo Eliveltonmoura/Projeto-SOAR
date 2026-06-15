@@ -7,13 +7,18 @@ import {
   Param,
   UploadedFile,
   UseInterceptors,
+  UseGuards,
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { ApiTags, ApiOperation, ApiConsumes } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiOperation, ApiConsumes } from '@nestjs/swagger';
 import { DoacoesService, CreateDoacaoDto } from './doacoes.service';
 import { StatusDoacao } from './doacao.entity';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
+import { PapelUsuario } from '../auth/usuario.entity';
 import * as path from 'path';
 
 @ApiTags('Doações')
@@ -49,12 +54,18 @@ export class DoacoesController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(PapelUsuario.ADMIN, PapelUsuario.PROFESSOR)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Lista todas as doações (painel de auditoria)' })
   findAll() {
     return this.doacoesService.findAll();
   }
 
   @Patch(':id/auditar')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(PapelUsuario.ADMIN, PapelUsuario.PROFESSOR)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Confirma ou rejeita um comprovante PIX' })
   auditar(
     @Param('id', ParseUUIDPipe) id: string,

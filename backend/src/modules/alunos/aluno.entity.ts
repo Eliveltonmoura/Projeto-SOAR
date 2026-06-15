@@ -8,8 +8,10 @@ import {
 } from 'typeorm';
 
 export enum StatusAluno {
+  PENDENTE = 'pendente', // aguardando aprovação do administrador
   ATIVO = 'ativo',
   AGUARDANDO = 'aguardando', // fila de espera
+  REJEITADO = 'rejeitado',
   INATIVO = 'inativo',
 }
 
@@ -45,7 +47,7 @@ export class Aluno {
   @Column({
     type: 'enum',
     enum: StatusAluno,
-    default: StatusAluno.AGUARDANDO,
+    default: StatusAluno.PENDENTE,
   })
   status: StatusAluno;
 
