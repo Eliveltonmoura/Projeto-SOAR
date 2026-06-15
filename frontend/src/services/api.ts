@@ -2,9 +2,14 @@ import axios from 'axios';
 
 export const TOKEN_KEY = 'soar_token';
 
+// Em produção (ex: Vercel), o frontend é estático e não tem o proxy do Vite,
+// então a URL completa do backend precisa vir de VITE_API_URL.
+// Em desenvolvimento, '/api/v1' é redirecionado pelo proxy do vite.config.ts.
+const baseURL = import.meta.env.VITE_API_URL || '/api/v1';
+
 // Instância única — se a URL mudar, muda só aqui
 const api = axios.create({
-  baseURL: '/api/v1',
+  baseURL,
   headers: { 'Content-Type': 'application/json' },
 });
 
@@ -31,7 +36,12 @@ api.interceptors.response.use(
       error.response?.data?.message ||
       error.response?.data?.error ||
       'Erro inesperado. Tente novamente.';
-    return Promise.reject(new Error(Array.isArray(msg) ? msg.join(', ') : msg));
+    const texto = Array.isArray(msg)
+      ? msg.join(', ')
+      : typeof msg === 'string'
+        ? msg
+        : 'Erro inesperado. Tente novamente.';
+    return Promise.reject(new Error(texto));
   },
 );
 
