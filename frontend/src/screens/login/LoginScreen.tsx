@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { SoarLogo } from '../../components/SoarLogo';
 import { LoginPayload } from '../../types';
+import logo from '../../assets/logo.png';
 
 export function LoginScreen() {
   const { login } = useAuth();
@@ -53,7 +53,11 @@ export function LoginScreen() {
           flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
           justifyContent: 'center', padding: '3rem 2.5rem', gap: 24, minWidth: 360,
         }}>
-          <SoarLogo size={36} withTagline />
+          <img
+            src={logo}
+            alt="SOAR"
+            style={{ height: 50, objectFit: 'contain' }}
+          />
 
           <div style={{ textAlign: 'center' }}>
             <h1 style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>Seja bem-vindo</h1>
