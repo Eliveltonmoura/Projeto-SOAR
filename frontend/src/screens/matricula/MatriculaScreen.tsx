@@ -5,6 +5,7 @@ import { alunosService } from '../../services/alunos.service';
 import { SoarLogo } from '../../components/SoarLogo';
 import { CreateAlunoPayload } from '../../types';
 import { isMenorDeIdade } from '../../utils/idade';
+import matriculaImg from '../../assets/matricula.png';
 
 export function MatriculaScreen() {
   const [sucesso, setSucesso] = useState<{ nome: string } | null>(null);
@@ -41,10 +42,18 @@ export function MatriculaScreen() {
         boxShadow: '0 20px 60px rgba(0,0,0,0.35)',
       }}>
         {/* Painel esquerdo */}
-        <div style={{
-          flex: 1, position: 'relative', display: 'none',
-          background: 'linear-gradient(135deg, #1a1a2e 0%, #2563eb 100%)',
-        }} className="matricula-image-panel" />
+      {/* Painel esquerdo */}
+<div
+  style={{
+    flex: 1,
+    position: 'relative',
+    display: 'block',
+    backgroundImage: `url(${matriculaImg})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  }}
+ 
+/>
 
         {/* Painel direito — conteúdo */}
         <div style={{
