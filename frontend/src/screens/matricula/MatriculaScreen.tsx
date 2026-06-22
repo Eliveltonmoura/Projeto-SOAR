@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { alunosService } from '../../services/alunos.service';
-import { SoarLogo } from '../../components/SoarLogo';
 import { CreateAlunoPayload } from '../../types';
 import { isMenorDeIdade } from '../../utils/idade';
 import matriculaImg from '../../assets/matricula.png';
+import logo from '../../assets/logo.png';
 
 export function MatriculaScreen() {
   const [sucesso, setSucesso] = useState<{ nome: string } | null>(null);
@@ -60,8 +60,11 @@ export function MatriculaScreen() {
           flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
           padding: '2.5rem', gap: 20, minWidth: 360, overflowY: 'auto',
         }}>
-          <SoarLogo size={36} withTagline />
-
+          <img
+            src={logo}
+            alt="SOAR"
+            style={{ height: 50, objectFit: 'contain' }}
+          />
           {sucesso ? (
             <div style={{ width: '100%', maxWidth: 360, textAlign: 'center' }}>
               <div style={{
