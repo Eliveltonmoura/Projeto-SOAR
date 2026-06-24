@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { relatoriosService } from '../../services/doacoes.service';
 import { RelatorioImpacto } from '../../types';
-import { Users, TrendingUp, Heart, Calendar } from 'lucide-react';
+import { Users, TrendingUp, Heart, Calendar, Printer } from 'lucide-react';
 
 export function RelatoriosScreen() {
   const [dados, setDados] = useState<RelatorioImpacto | null>(null);
@@ -26,10 +26,27 @@ export function RelatoriosScreen() {
 
   return (
     <div>
-      <h1 style={{ fontSize: 22, marginBottom: 4 }}>Relatório de Impacto Social</h1>
-      <p style={{ color: '#666', fontSize: 13, marginBottom: 24 }}>
-        Gerado em {new Date(dados.geradoEm).toLocaleString('pt-BR')}
-      </p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div>
+          <h1 style={{ fontSize: 22, marginBottom: 4 }}>Relatório de Impacto Social</h1>
+          <p style={{ color: '#666', fontSize: 13, marginBottom: 24 }}>
+            Gerado em {new Date(dados.geradoEm).toLocaleString('pt-BR')}
+          </p>
+        </div>
+        <button
+          className="no-print"
+          onClick={() => window.print()}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            background: '#1a1a2e', color: '#fff', border: 'none',
+            borderRadius: 8, padding: '0.6rem 1rem', fontSize: 13,
+            fontWeight: 600, cursor: 'pointer',
+          }}
+        >
+          <Printer size={16} />
+          Imprimir / Salvar PDF
+        </button>
+      </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
         <Card
