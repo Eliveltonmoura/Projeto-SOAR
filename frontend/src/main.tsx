@@ -13,6 +13,12 @@ style.textContent = `
     border-color: #6366f1 !important;
     box-shadow: 0 0 0 2px rgba(99,102,241,0.15);
   }
+
+  @media print {
+    .no-print { display: none !important; }
+    body { background: #fff !important; }
+    main { padding: 0 !important; background: #fff !important; }
+  }
 `;
 document.head.appendChild(style);
 

@@ -70,7 +70,7 @@ export function AdminLayout() {
   return (
     <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'system-ui, sans-serif' }}>
       {/* Sidebar */}
-      <aside style={{
+      <aside className="no-print" style={{
         width: 240,
         background: '#1a1a2e',
         color: '#fff',
@@ -185,7 +185,7 @@ export function AdminLayout() {
 
       {/* Conteúdo principal */}
       <main style={{ flex: 1, background: '#f8fafc', padding: '2rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
+        <div className="no-print" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
           <SoarLogo size={24} />
         </div>
         <Outlet />
