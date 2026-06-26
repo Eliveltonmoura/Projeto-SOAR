@@ -103,15 +103,26 @@ export function LoginScreen() {
             </button>
           </form>
 
-          <Link
-            to="/matricula"
-            style={{
-              textAlign: 'center', fontSize: 13, color: '#2563eb',
-              textDecoration: 'none', fontWeight: 600,
-            }}
-          >
-            Quero me matricular
-          </Link>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 16 }}>
+            <Link
+              to="/matricula"
+              style={{
+                textAlign: 'center', fontSize: 13, color: '#2563eb',
+                textDecoration: 'none', fontWeight: 600,
+              }}
+            >
+              Quero me matricular
+            </Link>
+            <Link
+              to="/doacoes"
+              style={{
+                textAlign: 'center', fontSize: 13, color: '#059669',
+                textDecoration: 'none', fontWeight: 600,
+              }}
+            >
+              Quero doar
+            </Link>
+          </div>
         </div>
       </div>
 

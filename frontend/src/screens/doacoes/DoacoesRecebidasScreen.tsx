@@ -42,6 +42,15 @@ export function DoacoesRecebidasScreen() {
     }
   }
 
+  async function verComprovante(id: string) {
+    setErro('');
+    try {
+      await doacoesService.verComprovante(id);
+    } catch (e: any) {
+      setErro(e.message);
+    }
+  }
+
   return (
     <div>
       <h1 style={{ fontSize: 22, marginBottom: 4 }}>Doações Recebidas</h1>
@@ -66,6 +75,7 @@ export function DoacoesRecebidasScreen() {
                 <th style={thStyle}>Doador</th>
                 <th style={thStyle}>Valor</th>
                 <th style={thStyle}>Data</th>
+                <th style={thStyle}>Comprovante</th>
                 <th style={thStyle}>Status</th>
               </tr>
             </thead>
@@ -77,6 +87,22 @@ export function DoacoesRecebidasScreen() {
                     {Number(doacao.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                   </td>
                   <td style={tdStyle}>{format(new Date(doacao.criadoEm), 'dd/MM/yyyy')}</td>
+                  <td style={tdStyle}>
+                    {doacao.comprovantePixOriginalName ? (
+                      <button
+                        onClick={() => verComprovante(doacao.id)}
+                        style={{
+                          background: 'none', border: 'none', cursor: 'pointer',
+                          color: '#2563eb', fontSize: 13, fontWeight: 600, padding: 0,
+                          textDecoration: 'underline',
+                        }}
+                      >
+                        Ver comprovante
+                      </button>
+                    ) : (
+                      <span style={{ color: '#9ca3af', fontSize: 13 }}>—</span>
+                    )}
+                  </td>
                   <td style={tdStyle}>
                     <select
                       value={doacao.status}
@@ -95,7 +121,7 @@ export function DoacoesRecebidasScreen() {
               ))}
               {doacoes.length === 0 && (
                 <tr>
-                  <td colSpan={4} style={{ ...tdStyle, textAlign: 'center', color: '#9ca3af' }}>
+                  <td colSpan={5} style={{ ...tdStyle, textAlign: 'center', color: '#9ca3af' }}>
                     Nenhuma doação registrada.
                   </td>
                 </tr>

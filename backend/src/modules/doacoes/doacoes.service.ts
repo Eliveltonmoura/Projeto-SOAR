@@ -2,16 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Doacao, StatusDoacao } from './doacao.entity';
+import { CreateDoacaoDto } from './dto/doacao.dto';
 import * as path from 'path';
 import * as fs from 'fs';
-
-export class CreateDoacaoDto {
-  nomeDoador: string;
-  cpfDoador?: string;
-  email?: string;
-  valor: number;
-  mensagem?: string;
-}
 
 @Injectable()
 export class DoacoesService {
@@ -42,6 +35,18 @@ export class DoacoesService {
 
   async findAll(): Promise<Doacao[]> {
     return this.doacaoRepo.find({ order: { criadoEm: 'DESC' } });
+  }
+
+  async obterComprovante(id: string): Promise<{ caminho: string; nomeOriginal: string }> {
+    const doacao = await this.doacaoRepo.findOne({ where: { id } });
+    if (!doacao) throw new NotFoundException('Doação não encontrada.');
+    if (!doacao.comprovantePixPath) {
+      throw new NotFoundException('Esta doação não possui comprovante anexado.');
+    }
+    return {
+      caminho: path.resolve(doacao.comprovantePixPath),
+      nomeOriginal: doacao.comprovantePixOriginalName ?? 'comprovante',
+    };
   }
 
   // Auditoria: confirmar ou rejeitar uma doação

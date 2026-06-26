@@ -5,6 +5,7 @@ import {
   Patch,
   Body,
   Param,
+  Res,
   UploadedFile,
   UseInterceptors,
   UseGuards,
@@ -12,8 +13,10 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { Response } from 'express';
 import { ApiBearerAuth, ApiTags, ApiOperation, ApiConsumes } from '@nestjs/swagger';
-import { DoacoesService, CreateDoacaoDto } from './doacoes.service';
+import { DoacoesService } from './doacoes.service';
+import { CreateDoacaoDto } from './dto/doacao.dto';
 import { StatusDoacao } from './doacao.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
@@ -60,6 +63,19 @@ export class DoacoesController {
   @ApiOperation({ summary: 'Lista todas as doações (painel de auditoria)' })
   findAll() {
     return this.doacoesService.findAll();
+  }
+
+  @Get(':id/comprovante')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(PapelUsuario.ADMIN, PapelUsuario.PROFESSOR)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Baixa o comprovante PIX anexado à doação' })
+  async comprovante(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Res() res: Response,
+  ) {
+    const { caminho, nomeOriginal } = await this.doacoesService.obterComprovante(id);
+    res.download(caminho, nomeOriginal);
   }
 
   @Patch(':id/auditar')
