@@ -16,6 +16,14 @@ export const doacoesService = {
     api
       .patch<Doacao>(`/doacoes/${id}/auditar`, { status, conferidoPor })
       .then((r) => r.data),
+
+  // Abre o comprovante PIX em nova aba para visualização (requer autenticação)
+  verComprovante: async (id: string) => {
+    const resposta = await api.get(`/doacoes/${id}/comprovante`, { responseType: 'blob' });
+    const url = window.URL.createObjectURL(resposta.data);
+    window.open(url, '_blank', 'noopener');
+    setTimeout(() => window.URL.revokeObjectURL(url), 60_000);
+  },
 };
 
 export const relatoriosService = {
