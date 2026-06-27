@@ -145,7 +145,7 @@ export function MatriculaScreen() {
                   <Field label={menorDeIdade ? 'Telefone do responsável *' : 'Seu telefone *'} error={errors.telefoneResponsavel?.message}>
                     <input placeholder="(88) 99999-9999" {...register('telefoneResponsavel', { required: 'Obrigatório' })} style={inputStyle} />
                   </Field>
-                  <Field label="E-mail (opcional)">
+                  <Field label="E-mail">
                     <input type="email" {...register('email')} style={inputStyle} />
                   </Field>
                 </Section>

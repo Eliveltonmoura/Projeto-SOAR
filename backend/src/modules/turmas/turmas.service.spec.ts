@@ -117,8 +117,13 @@ describe('TurmasService', () => {
     it('cria o registro formal da turma se ele ainda não existir', async () => {
       turmaRepo.findOne.mockResolvedValue(null);
       await service.atribuirProfessor('canto', '19h', 'prof-1');
-      expect(turmaRepo.create).toHaveBeenCalledWith({ instrumento: 'canto', horario: '19h' });
-      expect(turmaRepo.save).toHaveBeenCalled();
+
+      expect(turmaRepo.create).toHaveBeenCalledTimes(1);
+      // create() é chamado só com instrumento+horario; o professor é setado depois,
+      // na mesma referência — por isso a asserção é sobre o save() (estado final)
+      expect(turmaRepo.save).toHaveBeenCalledWith(
+        expect.objectContaining({ instrumento: 'canto', horario: '19h', professor: { id: 'prof-1' } }),
+      );
     });
   });
 });
