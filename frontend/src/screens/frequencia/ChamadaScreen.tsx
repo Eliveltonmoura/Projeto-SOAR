@@ -71,7 +71,7 @@ export function ChamadaScreen() {
   return (
     <div>
       <button
-        onClick={() => navigate('/frequencia')}
+        onClick={() => navigate(-1)}
         style={{
           display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none',
           color: '#6b7280', cursor: 'pointer', fontSize: 13, marginBottom: 12, padding: 0,

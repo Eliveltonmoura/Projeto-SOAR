@@ -125,6 +125,15 @@ export class AlunosService {
     return this.toResponseDto(aluno);
   }
 
+  // Exclui o aluno, seu histórico de presença e a conta de acesso vinculada
+  async excluir(id: string): Promise<void> {
+    const aluno = await this.alunoRepo.findOne({ where: { id } });
+    if (!aluno) throw new NotFoundException('Aluno não encontrado.');
+
+    await this.authService.removerContaPorAluno(id);
+    await this.alunoRepo.remove(aluno);
+  }
+
   // HU-02: Fila de espera — promove o próximo quando uma vaga abre
   async promoverFilaDeEspera(horario: string): Promise<void> {
     const proximo = await this.alunoRepo.findOne({

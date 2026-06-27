@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { Check, X } from 'lucide-react';
+import { Check, X, Eye } from 'lucide-react';
 import { alunosService } from '../../services/alunos.service';
 import { Aluno } from '../../types';
 
@@ -10,6 +10,7 @@ export function MatriculasPendentesScreen() {
   const [erro, setErro] = useState('');
   const [mensagem, setMensagem] = useState('');
   const [processando, setProcessando] = useState<string | null>(null);
+  const [detalhe, setDetalhe] = useState<Aluno | null>(null);
 
   useEffect(() => {
     carregar();
@@ -110,6 +111,13 @@ export function MatriculasPendentesScreen() {
                   <td style={tdStyle}>
                     <div style={{ display: 'flex', gap: 8 }}>
                       <button
+                        onClick={() => setDetalhe(aluno)}
+                        title="Ver detalhes"
+                        style={{ ...btnStyle, color: '#2563eb', borderColor: '#2563eb' }}
+                      >
+                        <Eye size={14} /> Detalhes
+                      </button>
+                      <button
                         onClick={() => aprovar(aluno.id)}
                         disabled={processando === aluno.id}
                         title="Aceitar"
@@ -140,6 +148,55 @@ export function MatriculasPendentesScreen() {
           </table>
         </div>
       )}
+
+      {detalhe && (
+        <div
+          onClick={() => setDetalhe(null)}
+          style={{
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50,
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: '#fff', borderRadius: 12, padding: '1.5rem',
+              width: '100%', maxWidth: 420, boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+            }}
+          >
+            <h2 style={{ fontSize: 18, marginBottom: 16 }}>{detalhe.nomeCompleto}</h2>
+            <div style={{ display: 'grid', gap: 10, fontSize: 14 }}>
+              <DetalheCampo label="Responsável" valor={detalhe.nomeResponsavel} />
+              <DetalheCampo label="Telefone" valor={detalhe.telefoneResponsavel} />
+              <DetalheCampo label="E-mail" valor={detalhe.email || '—'} />
+              <DetalheCampo label="Data de nascimento" valor={format(new Date(detalhe.dataNascimento), 'dd/MM/yyyy')} />
+              <DetalheCampo label="Instrumento" valor={detalhe.instrumentoDesejado ?? '—'} />
+              <DetalheCampo label="Horário preferencial" valor={detalhe.horarioPreferencial?.toUpperCase() ?? '—'} />
+              <DetalheCampo label="Recebido em" valor={format(new Date(detalhe.criadoEm), 'dd/MM/yyyy HH:mm')} />
+            </div>
+            <button
+              onClick={() => setDetalhe(null)}
+              style={{
+                marginTop: 20, padding: '0.5rem 1rem', borderRadius: 8, border: 'none',
+                background: '#1a1a2e', color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer',
+              }}
+            >
+              Fechar
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DetalheCampo({ label, valor }: { label: string; valor: string }) {
+  return (
+    <div>
+      <div style={{ fontSize: 11, color: '#6b7280', fontWeight: 700, textTransform: 'uppercase', marginBottom: 2 }}>
+        {label}
+      </div>
+      <div>{valor}</div>
     </div>
   );
 }

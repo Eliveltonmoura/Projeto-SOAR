@@ -17,6 +17,9 @@ export const alunosService = {
   rejeitar: (id: string) =>
     api.patch<Aluno>(`/alunos/${id}/rejeitar`).then((r) => r.data),
 
+  excluir: (id: string) =>
+    api.delete(`/alunos/${id}`).then(() => undefined),
+
   buscarPorId: (id: string) =>
     api.get<Aluno>(`/alunos/${id}`).then((r) => r.data),
 

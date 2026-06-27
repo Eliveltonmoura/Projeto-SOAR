@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Trash2 } from 'lucide-react';
 import { alunosService } from '../../services/alunos.service';
 import { Aluno } from '../../types';
 
@@ -6,6 +7,7 @@ export function ListarAlunosScreen() {
   const [alunos, setAlunos] = useState<Aluno[]>([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
+  const [excluindo, setExcluindo] = useState<string | null>(null);
 
   useEffect(() => {
     alunosService
@@ -14,6 +16,20 @@ export function ListarAlunosScreen() {
       .catch((e: any) => setErro(e.message))
       .finally(() => setLoading(false));
   }, []);
+
+  async function excluir(aluno: Aluno) {
+    if (!window.confirm(`Excluir ${aluno.nomeCompleto}? Essa ação não pode ser desfeita.`)) return;
+    setErro('');
+    setExcluindo(aluno.id);
+    try {
+      await alunosService.excluir(aluno.id);
+      setAlunos((prev) => prev.filter((a) => a.id !== aluno.id));
+    } catch (e: any) {
+      setErro(e.message);
+    } finally {
+      setExcluindo(null);
+    }
+  }
 
   return (
     <div>
@@ -40,6 +56,7 @@ export function ListarAlunosScreen() {
                 <th style={thStyle}>Quantidade de Faltas</th>
                 <th style={thStyle}>Instrumento</th>
                 <th style={thStyle}>Horário</th>
+                <th style={thStyle}>Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -49,11 +66,26 @@ export function ListarAlunosScreen() {
                   <td style={tdStyle}>{aluno.faltas ?? 0}</td>
                   <td style={{ ...tdStyle, textTransform: 'capitalize' }}>{aluno.instrumentoDesejado}</td>
                   <td style={{ ...tdStyle, textTransform: 'uppercase' }}>{aluno.horarioPreferencial}</td>
+                  <td style={tdStyle}>
+                    <button
+                      onClick={() => excluir(aluno)}
+                      disabled={excluindo === aluno.id}
+                      title="Excluir aluno"
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: 4,
+                        padding: '0.35rem 0.7rem', borderRadius: 6, border: '1px solid #dc2626',
+                        background: '#fff', color: '#dc2626', fontSize: 13, fontWeight: 600,
+                        cursor: excluindo === aluno.id ? 'not-allowed' : 'pointer',
+                      }}
+                    >
+                      <Trash2 size={14} /> Excluir
+                    </button>
+                  </td>
                 </tr>
               ))}
               {alunos.length === 0 && (
                 <tr>
-                  <td colSpan={4} style={{ ...tdStyle, textAlign: 'center', color: '#9ca3af' }}>
+                  <td colSpan={5} style={{ ...tdStyle, textAlign: 'center', color: '#9ca3af' }}>
                     Nenhum aluno ativo encontrado.
                   </td>
                 </tr>

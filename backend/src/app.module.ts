@@ -8,6 +8,7 @@ import { DoacoesModule } from './modules/doacoes/doacoes.module';
 import { RelatoriosModule } from './modules/relatorios/relatorios.module';
 import { TurmasModule } from './modules/turmas/turmas.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { PlanosAulaModule } from './modules/planos-aula/planos-aula.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { AuthModule } from './modules/auth/auth.module';
     DoacoesModule,
     RelatoriosModule,
     TurmasModule,
+    PlanosAulaModule,
   ],
 })
 export class AppModule {}

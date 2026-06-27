@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Patch,
+  Delete,
   Body,
   Param,
   ParseUUIDPipe,
@@ -90,5 +91,15 @@ export class AlunosController {
   @ApiOperation({ summary: 'Busca aluno por ID' })
   findById(@Param('id', ParseUUIDPipe) id: string) {
     return this.alunosService.findById(id);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(PapelUsuario.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Exclui um aluno, seu histórico de presença e conta de acesso' })
+  excluir(@Param('id', ParseUUIDPipe) id: string) {
+    return this.alunosService.excluir(id);
   }
 }
