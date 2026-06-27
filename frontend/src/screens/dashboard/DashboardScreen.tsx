@@ -1,10 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import { Users, ClipboardCheck, Heart, LayoutGrid } from 'lucide-react';
+import { Users, Heart, LayoutGrid } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const cards = [
   { label: 'Alunos', icon: Users, to: '/alunos/listar', color: '#2563eb' },
-  { label: 'Frequência', icon: ClipboardCheck, to: '/frequencia', color: '#059669' },
   { label: 'Doações', icon: Heart, to: '/doacoes-recebidas', color: '#ec4899' },
   { label: 'Turmas', icon: LayoutGrid, to: '/turmas', color: '#f59e0b' },
 ];

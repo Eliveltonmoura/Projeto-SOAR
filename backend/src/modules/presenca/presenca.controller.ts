@@ -17,7 +17,7 @@ export class PresencaController {
 
   @Post()
   @UseGuards(RolesGuard)
-  @Roles(PapelUsuario.ADMIN, PapelUsuario.PROFESSOR)
+  @Roles(PapelUsuario.PROFESSOR)
   @ApiOperation({ summary: 'HU-03 — Lançar presença (mobile-friendly)' })
   lancar(@Body() dto: LancarPresencaDto) {
     return this.presencaService.lancar(dto);
@@ -34,7 +34,7 @@ export class PresencaController {
 
   @Get('data')
   @UseGuards(RolesGuard)
-  @Roles(PapelUsuario.ADMIN, PapelUsuario.PROFESSOR)
+  @Roles(PapelUsuario.PROFESSOR)
   @ApiOperation({ summary: 'Presenças de uma data (YYYY-MM-DD)' })
   findByData(@Query('data') data: string) {
     return this.presencaService.findByData(data);
@@ -42,7 +42,7 @@ export class PresencaController {
 
   @Get('turma')
   @UseGuards(RolesGuard)
-  @Roles(PapelUsuario.ADMIN, PapelUsuario.PROFESSOR)
+  @Roles(PapelUsuario.PROFESSOR)
   @ApiOperation({ summary: 'Presenças de uma turma (instrumento + horário) em uma data' })
   findByTurma(
     @Query('instrumento') instrumento: string,

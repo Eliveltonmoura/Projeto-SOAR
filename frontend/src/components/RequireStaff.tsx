@@ -16,6 +16,9 @@ export function RequireStaff() {
   if (usuario?.papel === 'aluno') {
     return <Navigate to="/meu-painel" replace />;
   }
+  if (usuario?.papel === 'professor') {
+    return <Navigate to="/professor" replace />;
+  }
 
   return <Outlet />;
 }

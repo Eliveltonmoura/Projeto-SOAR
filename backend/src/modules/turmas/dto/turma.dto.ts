@@ -3,6 +3,7 @@ export class TurmaResumoDto {
   horario: string;
   nome: string; // ex: "Turma Violão 15H"
   professor: string | null;
+  professorId: string | null;
   alunos: number;
   vagas: number;
 }

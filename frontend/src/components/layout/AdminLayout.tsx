@@ -3,9 +3,9 @@ import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   UserCircle,
   Users,
-  ClipboardCheck,
   Heart,
   LayoutGrid,
+  GraduationCap,
   ChevronDown,
   ChevronRight,
   ArrowLeft,
@@ -31,8 +31,8 @@ const navItems: NavItem[] = [
       { to: '/alunos/fila-espera', label: 'Fila de Espera' },
     ],
   },
-  { label: 'Frequência', icon: ClipboardCheck, to: '/frequencia' },
   { label: 'Turmas', icon: LayoutGrid, to: '/turmas' },
+  { label: 'Professores', icon: GraduationCap, to: '/professores' },
   {
     label: 'Doações',
     icon: Heart,

@@ -13,7 +13,7 @@ export class RegistroPresenca {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Aluno, { eager: true })
+  @ManyToOne(() => Aluno, { eager: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'aluno_id' })
   aluno: Aluno;
 

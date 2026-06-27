@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   Injectable,
   Logger,
   OnModuleInit,
@@ -11,6 +12,7 @@ import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { PapelUsuario, Usuario } from './usuario.entity';
 import { LoginDto } from './dto/login.dto';
+import { CriarProfessorDto } from './dto/criar-professor.dto';
 import { LoginResponseDto, UsuarioResponseDto } from './dto/usuario-response.dto';
 
 @Injectable()
@@ -91,6 +93,36 @@ export class AuthService implements OnModuleInit {
     });
     await this.usuarioRepo.save(usuario);
     this.logger.log(`Conta de acesso criada para o aluno: ${aluno.email}`);
+  }
+
+  // Remove a conta de acesso vinculada a um aluno excluído
+  async removerContaPorAluno(alunoId: string): Promise<void> {
+    await this.usuarioRepo.delete({ alunoId });
+  }
+
+  async listarProfessores(): Promise<UsuarioResponseDto[]> {
+    const professores = await this.usuarioRepo.find({
+      where: { papel: PapelUsuario.PROFESSOR },
+      order: { nome: 'ASC' },
+    });
+    return professores.map((p) => this.toResponseDto(p));
+  }
+
+  async criarProfessor(dto: CriarProfessorDto): Promise<UsuarioResponseDto> {
+    const existente = await this.usuarioRepo.findOne({ where: { email: dto.email } });
+    if (existente) {
+      throw new ConflictException('Já existe um usuário com este e-mail.');
+    }
+
+    const rounds = Number(this.config.get('BCRYPT_ROUNDS', 10));
+    const professor = this.usuarioRepo.create({
+      nome: dto.nome,
+      email: dto.email,
+      senhaHash: await bcrypt.hash(dto.senha, rounds),
+      papel: PapelUsuario.PROFESSOR,
+    });
+    const salvo = await this.usuarioRepo.save(professor);
+    return this.toResponseDto(salvo);
   }
 
   async me(id: string): Promise<UsuarioResponseDto> {

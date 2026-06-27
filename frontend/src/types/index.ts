@@ -42,6 +42,7 @@ export interface Turma {
   horario: string;
   nome: string;
   professor: string | null;
+  professorId: string | null;
   alunos: number;
   vagas: number;
 }
@@ -82,6 +83,20 @@ export interface Doacao {
   status: StatusDoacao;
   comprovantePixOriginalName?: string;
   criadoEm: string;
+}
+
+export interface PlanoAula {
+  id: string;
+  instrumento: string;
+  horario: string;
+  data: string;
+  tema: string;
+  objetivo: string;
+  conteudo: string;
+  materiais?: string | null;
+  professor?: string | null;
+  criadoEm: string;
+  atualizadoEm: string;
 }
 
 export interface RelatorioImpacto {
